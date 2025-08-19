@@ -1,0 +1,7 @@
+pandas
+openpyxl
+google-generativeai
+openai
+anthropic
+python-dotenv
+aiohttp 
