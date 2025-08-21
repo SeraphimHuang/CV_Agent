@@ -1,0 +1,9 @@
+{
+  "excel_file": "positions_example.xlsx",
+  "sheet_name": "Sheet1",
+  "date_filter": {
+    "column": "日期",
+    "start_date": "2024-01-01",
+    "end_date": "2024-01-31"
+  }
+} 
