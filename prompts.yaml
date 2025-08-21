@@ -1,0 +1,121 @@
+# LLM Prompt配置文件
+# 统一管理所有prompt模板和LLM特定设置
+
+# LLM基础配置
+llm_configs:
+  gemini:
+    model: "gemini-pro"
+    temperature: 0.1
+    max_output_tokens: 1000
+  
+  gpt:
+    model: "gpt-3.5-turbo"
+    temperature: 0.1
+    max_tokens: 1000
+    
+  claude:
+    model: "claude-3-sonnet-20240229"
+    temperature: 0.1
+    max_tokens: 1000
+
+# 重试配置
+retry_config:
+  max_retries: 10
+  retry_delay: 0.5  # seconds
+
+# Prompt模板
+prompts:
+  screen_jd:
+    base_template: |
+      请分析以下职位描述，判断是否有美国公民/绿卡身份要求和是否要求高级别经验。
+
+      职位描述：
+      {jd_text}
+
+      判断标准：
+      - citizenship_required: 如果明确提到需要US citizenship、green card、work authorization等，则为true
+      - senior_level_required: 如果要求senior level、5年以上经验、lead/manager角色等，则为true
+    
+    output_formats:
+      gemini: |
+        请严格按照以下JSON格式回答，不要添加任何其他内容：
+        {{
+            "citizenship_required": true/false,
+            "senior_level_required": true/false,
+            "reason": "具体原因说明"
+        }}
+      
+      gpt: |
+        请严格按照以下JSON格式回答，不要添加任何其他内容：
+        {{
+            "citizenship_required": true/false,
+            "senior_level_required": true/false,
+            "reason": "具体原因说明"
+        }}
+      
+      claude: |
+        请用JSON格式回答，确保格式正确：
+        {{
+            "citizenship_required": true/false,
+            "senior_level_required": true/false,
+            "reason": "具体原因说明"
+        }}
+
+  rank_experiences:
+    base_template: |
+      请根据以下职位描述，从给定的经历中选择最相关的6个经历并进行排名。
+
+      职位描述：
+      {jd_text}
+
+      个人经历库：
+      {experiences_text}
+
+      要求：
+      - 选择最匹配职位要求的6个经历
+      - match_percentage表示整体匹配度(0-100)
+      - rank从1到6，1为最相关
+      - justification要具体说明技能、经验、项目类型的匹配度
+    
+    output_formats:
+      gemini: |
+        请严格按照以下JSON格式回答，不要添加任何其他内容：
+        {{
+            "match_percentage": 85,
+            "ranked_experiences": [
+                {{"id": "经历ID", "rank": 1, "justification": "为什么这个经历排名第1的详细理由"}},
+                {{"id": "经历ID", "rank": 2, "justification": "为什么这个经历排名第2的详细理由"}},
+                {{"id": "经历ID", "rank": 3, "justification": "为什么这个经历排名第3的详细理由"}},
+                {{"id": "经历ID", "rank": 4, "justification": "为什么这个经历排名第4的详细理由"}},
+                {{"id": "经历ID", "rank": 5, "justification": "为什么这个经历排名第5的详细理由"}},
+                {{"id": "经历ID", "rank": 6, "justification": "为什么这个经历排名第6的详细理由"}}
+            ]
+        }}
+      
+      gpt: |
+        请严格按照以下JSON格式回答，不要添加任何其他内容：
+        {{
+            "match_percentage": 85,
+            "ranked_experiences": [
+                {{"id": "经历ID", "rank": 1, "justification": "为什么这个经历排名第1的详细理由"}},
+                {{"id": "经历ID", "rank": 2, "justification": "为什么这个经历排名第2的详细理由"}},
+                {{"id": "经历ID", "rank": 3, "justification": "为什么这个经历排名第3的详细理由"}},
+                {{"id": "经历ID", "rank": 4, "justification": "为什么这个经历排名第4的详细理由"}},
+                {{"id": "经历ID", "rank": 5, "justification": "为什么这个经历排名第5的详细理由"}},
+                {{"id": "经历ID", "rank": 6, "justification": "为什么这个经历排名第6的详细理由"}}
+            ]
+        }}
+      
+      claude: |
+        请用JSON格式回答，确保格式正确：
+        {{
+            "match_percentage": 85,
+            "ranked_experiences": [
+                {{"id": "经历ID", "rank": 1, "justification": "为什么这个经历排名第1的详细理由"}},
+                {{"id": "经历ID", "rank": 2, "justification": "为什么这个经历排名第2的详细理由"}},
+                {{"id": "经历ID", "rank": 3, "justification": "为什么这个经历排名第3的详细理由"}},
+                {{"id": "经历ID", "rank": 4, "justification": "为什么这个经历排名第4的详细理由"}},
+                {{"id": "经历ID", "rank": 5, "justification": "为什么这个经历排名第5的详细理由"}},
+                {{"id": "经历ID", "rank": 6, "justification": "为什么这个经历排名第6的详细理由"}}
+            ]
+        }} 

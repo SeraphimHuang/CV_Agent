@@ -4,4 +4,7 @@ google-generativeai
 openai
 anthropic
 python-dotenv
-aiohttp 
+aiohttp
+langchain==0.1.20
+pyyaml
+pydantic 
