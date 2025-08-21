@@ -3,6 +3,7 @@
 
 # Data files (sensitive/personal)
 *.xlsx
+!*_example.xlsx
 experiences.json
 
 # Output files

@@ -1,0 +1,77 @@
+[
+  {
+    "id": "sde_chat_app_v1",
+    "type": "project",
+    "title": "Terminal Chat Network Application",
+    "tech_stack": [
+      "Python", "MySQL", "FTP", "Socket Programming", "Multi-threading", 
+      "Git", "Linux", "Network Protocols"
+    ],
+    "achievements": [
+      "Developed a console-based chat application prototype with file transfer capabilities, supporting real-time communication between multiple users.",
+      "Implemented secure user authentication and registration system using MySQL database, handling login data and user management with 99% uptime.",
+      "Built FTP server integration for seamless file transfer of any type between users, reducing file sharing latency by 40%.",
+      "Designed multi-threaded architecture to handle concurrent user connections, supporting up to 50 simultaneous users."
+    ]
+  },
+  {
+    "id": "mle_recommendation_v1",
+    "type": "project", 
+    "title": "AI-Powered Music Recommendation System",
+    "tech_stack": [
+      "Python", "TensorFlow", "Scikit-learn", "Pandas", "NumPy", 
+      "Spotify API", "Flask", "Docker", "AWS EC2", "Redis"
+    ],
+    "achievements": [
+      "Built and deployed a collaborative filtering recommendation model using TensorFlow, achieving 92% accuracy in predicting user music preferences.",
+      "Implemented real-time feature engineering pipeline processing 1M+ user interactions daily, reducing recommendation latency by 60%.",
+      "Developed RESTful API using Flask and deployed on AWS EC2 with Redis caching, supporting 1000+ concurrent requests per second.",
+      "Applied matrix factorization and deep learning techniques to improve recommendation diversity by 35% while maintaining relevance scores above 0.85."
+    ]
+  },
+  {
+    "id": "quant_trading_strategy_v1",
+    "type": "project",
+    "title": "Algorithmic Trading Strategy Analysis",
+    "tech_stack": [
+      "Python", "Pandas", "NumPy", "Matplotlib", "Quantlib", 
+      "Alpha Vantage API", "Jupyter", "Backtrader", "Statistical Analysis"
+    ],
+    "achievements": [
+      "Developed and backtested a mean reversion trading strategy using statistical analysis, achieving 18% annual return with Sharpe ratio of 1.4.",
+      "Implemented automated data collection system using Alpha Vantage API, processing real-time market data for 500+ stocks daily.",
+      "Built comprehensive risk management framework with position sizing and stop-loss mechanisms, reducing maximum drawdown by 25%.",
+      "Created interactive visualization dashboard using Matplotlib for strategy performance analysis, enabling real-time monitoring of key metrics."
+    ]
+  },
+  {
+    "id": "sde_ecommerce_v1", 
+    "type": "project",
+    "title": "E-commerce Product Categorization System",
+    "tech_stack": [
+      "Java", "Spring Boot", "PostgreSQL", "Redis", "Docker", 
+      "Kubernetes", "AWS", "Elasticsearch", "REST API"
+    ],
+    "achievements": [
+      "Developed microservices-based product categorization system using Spring Boot, processing 10K+ product listings daily with 95% accuracy.",
+      "Implemented full-text search functionality with Elasticsearch, improving search response time by 70% and user engagement by 25%.",
+      "Built containerized deployment pipeline using Docker and Kubernetes on AWS, achieving 99.9% uptime and seamless scaling.",
+      "Designed RESTful APIs with comprehensive error handling and rate limiting, serving 500K+ requests daily across multiple client applications."
+    ]
+  },
+  {
+    "id": "mle_computer_vision_v1",
+    "type": "project",
+    "title": "Real-time Object Detection for Autonomous Vehicles",
+    "tech_stack": [
+      "Python", "PyTorch", "OpenCV", "CUDA", "TensorRT", 
+      "ROS", "Linux", "GPU Computing", "Computer Vision"
+    ],
+    "achievements": [
+      "Implemented YOLO-based object detection model using PyTorch, achieving 89% mAP on COCO dataset for vehicle, pedestrian, and traffic sign detection.",
+      "Optimized model inference using TensorRT and CUDA, reducing detection latency from 200ms to 45ms for real-time processing at 30 FPS.",
+      "Integrated detection system with ROS (Robot Operating System) for seamless communication with vehicle control systems.",
+      "Collected and labeled custom dataset of 15K+ images for urban driving scenarios, improving model performance in challenging conditions by 22%."
+    ]
+  }
+] 
