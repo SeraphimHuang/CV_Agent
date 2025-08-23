@@ -30,13 +30,16 @@ class UnifiedLLMManager:
     
     async def screen_jd_all(self, jd_text: str) -> Dict[str, Dict[str, Any]]:
         """并发调用所有LLM进行职位筛选"""
+        print(f"🚀 开始并发调用三个LLM...")
         tasks = [
             self.gemini.screen_jd(jd_text),
             self.gpt.screen_jd(jd_text), 
             self.claude.screen_jd(jd_text)
         ]
         
+        print(f"⏳ 等待所有LLM响应...")
         results = await asyncio.gather(*tasks)
+        print(f"✅ 所有LLM调用完成")
         
         return {
             'gemini': results[0],
@@ -46,10 +49,13 @@ class UnifiedLLMManager:
     
     async def rank_experiences_all(self, jd_text: str, experiences: List[Dict[str, Any]]) -> Dict[str, Dict[str, Any]]:
         """并发调用所有LLM进行经历排名"""
+        from utils.experience_formatter import format_experiences_library
+        experiences_library = format_experiences_library(experiences)
+
         tasks = [
-            self.gemini.rank_experiences(jd_text, experiences),
-            self.gpt.rank_experiences(jd_text, experiences),
-            self.claude.rank_experiences(jd_text, experiences)
+            self.gemini.rank_experiences(jd_text, experiences_library),
+            self.gpt.rank_experiences(jd_text, experiences_library),
+            self.claude.rank_experiences(jd_text, experiences_library)
         ]
         
         results = await asyncio.gather(*tasks)

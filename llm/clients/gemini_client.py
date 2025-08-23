@@ -18,6 +18,7 @@ class GeminiClient(BaseLLMClient):
     
     async def _call_llm(self, prompt: str) -> str:
         """调用Gemini API"""
+        print(f"🟡 Gemini API 调用开始...")
         generation_config = {
             "temperature": self.config['temperature'],
             "max_output_tokens": self.config['max_output_tokens'],
@@ -28,4 +29,5 @@ class GeminiClient(BaseLLMClient):
             prompt,
             generation_config=generation_config
         )
+        print(f"🟡 Gemini API 调用完成")
         return response.text 

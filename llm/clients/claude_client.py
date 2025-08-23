@@ -2,7 +2,7 @@
 Anthropic Claude客户端实现
 """
 
-from langchain.chat_models import ChatAnthropic
+from langchain_anthropic import ChatAnthropic
 from config.prompt_manager import PromptManager
 from llm.base_client import BaseLLMClient
 
@@ -21,5 +21,7 @@ class ClaudeClient(BaseLLMClient):
     
     async def _call_llm(self, prompt: str) -> str:
         """调用Claude API"""
-        response = await self.client.apredict(prompt)
-        return response 
+        print(f"🟣 Claude API 调用开始...")
+        response = await self.client.ainvoke(prompt)
+        print(f"🟣 Claude API 调用完成")
+        return response.content 

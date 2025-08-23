@@ -2,7 +2,7 @@
 OpenAI GPT客户端实现
 """
 
-from langchain.chat_models import ChatOpenAI
+from langchain_openai import ChatOpenAI
 from config.prompt_manager import PromptManager
 from llm.base_client import BaseLLMClient
 
@@ -21,5 +21,7 @@ class GPTClient(BaseLLMClient):
     
     async def _call_llm(self, prompt: str) -> str:
         """调用GPT API"""
-        response = await self.client.apredict(prompt)
-        return response 
+        print(f"🟢 GPT API 调用开始...")
+        response = await self.client.ainvoke(prompt)
+        print(f"🟢 GPT API 调用完成")
+        return response.content 

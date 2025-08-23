@@ -34,7 +34,10 @@ class BaseLLMClient(ABC):
         
         for attempt in range(max_retries + 1):
             try:
+                print(f"🔄 {self.llm_name} 开始调用 (尝试 {attempt + 1}/{max_retries + 1})")
+                print(f"📡 {self.llm_name} 发送API请求...")
                 response = await self._call_llm(prompt)
+                print(f"📥 {self.llm_name} 收到响应，长度: {len(response) if response else 0}")
                 
                 # 尝试修复和解析JSON
                 fixed_response = self.json_fixer.fix_json(response)
@@ -71,15 +74,14 @@ class BaseLLMClient(ABC):
                 "reason": f"{self.llm_name}调用失败: {str(e)}"
             }
     
-    async def rank_experiences(self, jd_text: str, experiences: List[Dict[str, Any]]) -> Dict[str, Any]:
+    async def rank_experiences(self, jd_text: str, experiences_library: str) -> Dict[str, Any]:
         """对经历进行排名"""
         try:
-            experiences_text = json.dumps(experiences, ensure_ascii=False, indent=2)
             prompt = self.prompt_manager.get_prompt(
                 'rank_experiences', 
                 self.llm_name, 
                 jd_text=jd_text, 
-                experiences_text=experiences_text
+                experiences_library=experiences_library
             )
             response = await self._call_with_retry(prompt)
             return json.loads(response)
