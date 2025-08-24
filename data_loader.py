@@ -63,6 +63,15 @@ def load_positions(config: dict) -> pd.DataFrame:
             filtered_len = len(df)
             
             print(f"日期筛选 ({date_config['start_date']} 到 {date_config['end_date']}): {original_len} -> {filtered_len} 行")
+
+    # 仅保留 status 为 None 的职位
+    if 'status' in df.columns:
+        before_status_len = len(df)
+        df = df[df['status'].isna()]
+        after_status_len = len(df)
+        print(f"状态筛选 (status == None): {before_status_len} -> {after_status_len} 行")
+    else:
+        print("警告: 未找到 'status' 列，跳过状态筛选")
     
     print(f"最终加载 {len(df)} 个职位")
     return df

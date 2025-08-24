@@ -211,7 +211,7 @@ class ResumeOptimizer:
             return False
         
         # 加载数据
-        if not self.load_data(experience_path = "experiences.json"):
+        if not self.load_data():
             return False
         
         # 初始化LLM管理器
