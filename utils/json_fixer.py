@@ -29,8 +29,9 @@ class JSONFixer:
         # 修复中文标点
         text = text.replace('，', ',')
         text = text.replace('：', ':')
-        text = text.replace('“', '"')
-        text = text.replace('”', '"')
+
+        # 将中文引号转为转义英文引号，避免破坏JSON字符串
+        text = text.replace('“', '\\"').replace('”', '\\"')
         
         # 修复多余的逗号（在}或]前）
         text = re.sub(r',\s*([}\]])', r'\1', text)

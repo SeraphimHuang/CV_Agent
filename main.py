@@ -92,52 +92,50 @@ class ResumeOptimizer:
         
         print(f"  🔍 分析: {position_info['company']} - {position_info['position']}")
         
-        # 步骤1: 筛选JD
+        # 步骤1: 仅使用 Gemini 进行初步筛选
         try:
-            screening_results = await self.llm_manager.screen_jd_all(jd_text)
-            print(f"    ✅ 筛选完成")
+            gemini_result = await self.llm_manager.gemini.screen_jd(jd_text)
+            print("    ✅ Gemini 筛选完成")
         except Exception as e:
-            print(f"    ❌ 筛选失败: {e}")
+            print(f"    ❌ Gemini 筛选失败: {e}")
             return {
                 "position_info": position_info,
-                "screening_results": {},
+                "screening_results": {"gemini": {"error": str(e)}},
                 "ranking_results": {},
                 "error": f"筛选失败: {str(e)}"
             }
-        
-        # 判断是否应该拒绝该职位（>=2个LLM认为不合适）
-        rejection_count = 0
-        rejection_reasons = []
-        
-        for llm_name, result in screening_results.items():
-            citizenship_required = result.get("citizenship_required", False)
-            senior_level_required = result.get("senior_level_required", False)
-            
-            if citizenship_required or senior_level_required:
-                rejection_count += 1
-                reasons = []
-                if citizenship_required:
-                    reasons.append("身份要求")
-                if senior_level_required:
-                    reasons.append("高级别要求")
-                rejection_reasons.append(f"{llm_name}: {', '.join(reasons)}")
-        
-        should_reject = rejection_count >= 2
-        
-        if should_reject:
-            print(f"    🚫 职位不合适 ({rejection_count}/3 LLM认为不合适)")
+
+        # 如果 Gemini 判断不合适则直接拒绝
+        if gemini_result.get("citizenship_required", False) or gemini_result.get("senior_level_required", False):
+            print("    🚫 职位不合适 (Gemini 判断有身份或高级要求)")
             return {
                 "position_info": position_info,
-                "screening_results": screening_results,
+                "screening_results": {"gemini": gemini_result},
                 "ranking_results": {},
                 "rejected": True,
-                "rejection_reasons": rejection_reasons
+                "rejection_reasons": ["gemini"]
             }
+
+        # 记录筛选结果，仅包含 Gemini
+        screening_results = {"gemini": gemini_result}
         
         # 步骤2: 经历排名
         try:
             ranking_results = await self.llm_manager.rank_experiences_all(jd_text, self.experiences_data)
-            print(f"    ✅ 排名完成")
+            print("    ✅ 排名完成")
+
+            # 打印各LLM排名摘要
+            for llm_name, res in ranking_results.items():
+                print(f"    📝 {llm_name} 排名结果:")
+                ranked = res.get("ranked_experiences")
+                if ranked:
+                    for item in ranked:
+                        rid = item.get("id", "?")
+                        rank = item.get("rank", "?")
+                        justification = item.get("justification", "")[:60]
+                        print(f"      #{rank} -> {rid} : {justification}...")
+                else:
+                    print(f"      ⚠️  无排名数据: {res.get('error', 'unknown')}")
         except Exception as e:
             print(f"    ❌ 排名失败: {e}")
             ranking_results = {"error": f"排名失败: {str(e)}"}

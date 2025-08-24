@@ -39,6 +39,9 @@ class BaseLLMClient(ABC):
                 response = await self._call_llm(prompt)
                 print(f"📥 {self.llm_name} 收到响应，长度: {len(response) if response else 0}")
                 
+                # 打印原始响应方便调试
+                print(f"📄 {self.llm_name} 原始响应:\n{response}\n---")
+
                 # 尝试修复和解析JSON
                 fixed_response = self.json_fixer.fix_json(response)
                 json.loads(fixed_response)  # 验证JSON格式
