@@ -43,8 +43,8 @@ class MarkdownReportGenerator:
         
         for llm_name, result in llm_results.items():
             if result_type == "screening":
-                citizenship = "✅ 有身份要求" if result.get("citizenship_required") else "❌ 无身份要求"
-                senior_level = "✅ 要求高级别" if result.get("senior_level_required") else "❌ 不要求高级别"
+                citizenship = "有身份要求" if result.get("citizenship_required") else "无身份要求"
+                senior_level = "要求高级别" if result.get("senior_level_required") else "不要求高级别"
                 reason = result.get("reason", "无")
                 formatted_results.append(f"**{llm_name.upper()}**: {citizenship}, {senior_level} - {reason}")
             
@@ -119,14 +119,21 @@ class MarkdownReportGenerator:
                 }
                 experience_scores[exp_id]["count"] += 1
         
+        # 补齐缺失LLM评分：未出现的按5分计
+        num_llms = len(ranking_results)
+        for exp_data in experience_scores.values():
+            missing = num_llms - exp_data["count"]
+            if missing > 0:
+                exp_data["total_score"] += missing * 5
+
         # 按总分排序（分数越低越好）
         sorted_experiences = sorted(
             experience_scores.values(),
             key=lambda x: x["total_score"]
         )
         
-        # 返回前6名
-        return sorted_experiences[:6]
+        # 返回前4名
+        return sorted_experiences[:4]
     
     def generate_report(self, analysis_results: List[Dict[str, Any]], experiences_data: List[Dict[str, Any]]) -> str:
         """
@@ -148,8 +155,7 @@ class MarkdownReportGenerator:
         self._add_line(f"**使用LLM**: Gemini, GPT-3.5, Claude-3-Sonnet")
         self._add_line()
         
-        # 创建经历标题映射
-        experience_title_map = {exp["id"]: exp["title"] for exp in experiences_data}
+        # 我们仅使用经历ID，不再依赖 title 字段
         
         # 统计信息
         suitable_count = 0
@@ -204,7 +210,7 @@ class MarkdownReportGenerator:
                 
                 # 如果有排名结果，显示推荐经历
                 if ranking_results:
-                    self._add_header("📝 推荐经历 Top 6", 3)
+                    self._add_header("📝 推荐经历 Top 4", 3)
                     
                     # 聚合排名结果
                     top_experiences = self._aggregate_experience_rankings(ranking_results)
@@ -212,10 +218,9 @@ class MarkdownReportGenerator:
                     if top_experiences:
                         for rank, exp_data in enumerate(top_experiences, 1):
                             exp_id = exp_data["id"]
-                            exp_title = experience_title_map.get(exp_id, exp_id)
                             total_score = exp_data["total_score"]
                             
-                            self._add_ordered_item(f"**{exp_title}** (总分: {total_score})", rank)
+                            self._add_ordered_item(f"**{exp_id}** (总分: {total_score})", rank)
                             
                             # 显示各LLM的评价
                             for llm_name, ranking_info in exp_data["llm_rankings"].items():
@@ -244,9 +249,6 @@ class MarkdownReportGenerator:
         self._add_list_item(f"**推荐投递**: {suitable_count} 个")
         self._add_list_item(f"**不推荐投递**: {rejected_count} 个")
         self._add_list_item(f"**推荐率**: {suitable_count/len(analysis_results)*100:.1f}%")
-        self._add_line()
-        
-        self._add_quote("💡 **建议**: 重点关注推荐投递的职位，针对性地准备简历和求职信。")
         
         return "\n".join(self.report_content)
 
@@ -269,33 +271,3 @@ def create_markdown_report(analysis_results: List[Dict[str, Any]],
         f.write(report_content)
     
     print(f"✅ Markdown报告已生成: {output_path}")
-
-
-if __name__ == "__main__":
-    # 测试报告生成器
-    print("测试Markdown报告生成器...")
-    
-    # 示例数据
-    sample_analysis_results = [
-        {
-            "position_info": {
-                "company": "TechCorp Inc.",
-                "position": "Software Engineer Intern",
-                "location": "San Francisco, CA",
-                "link": "https://techcorp.com/careers"
-            },
-            "screening_results": {
-                "gemini": {"citizenship_required": True, "senior_level_required": False, "reason": "明确要求US citizenship"},
-                "gpt": {"citizenship_required": True, "senior_level_required": False, "reason": "职位要求美国公民身份"},
-                "claude": {"citizenship_required": False, "senior_level_required": False, "reason": "未发现明确身份要求"}
-            }
-        }
-    ]
-    
-    sample_experiences = [
-        {"id": "project_1", "title": "AI项目开发经历"}
-    ]
-    
-    # 生成测试报告
-    create_markdown_report(sample_analysis_results, sample_experiences, "test_report.md")
-    print("✅ 测试完成") 

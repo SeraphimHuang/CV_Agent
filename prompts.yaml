@@ -6,17 +6,17 @@ llm_configs:
   gemini:
     model: "gemini-2.5-flash"
     temperature: 0.1
-    max_output_tokens: 1000
+    max_output_tokens: 2000
   
   gpt:
     model: "gpt-5"
     temperature: 0.1
-    max_tokens: 1000
+    max_tokens: 2000
     
   claude:
     model: "claude-opus-4-1-20250805"
     temperature: 0.1
-    max_tokens: 1000
+    max_tokens: 2000
 
 # 重试配置
 retry_config:
@@ -39,6 +39,7 @@ prompts:
     output_formats:
       gemini: |
         请严格按照以下JSON格式回答，不要添加任何其他内容：
+        # 理由请使用一句中文简述
         {{
             "citizenship_required": true/false,
             "senior_level_required": true/false,
@@ -47,6 +48,7 @@ prompts:
       
       gpt: |
         请严格按照以下JSON格式回答，不要添加任何其他内容：
+        # 理由请使用一句中文简述
         {{
             "citizenship_required": true/false,
             "senior_level_required": true/false,
@@ -55,6 +57,7 @@ prompts:
       
       claude: |
         请用JSON格式回答，确保格式正确：
+        # 理由请使用一句中文简述
         {{
             "citizenship_required": true/false,
             "senior_level_required": true/false,
@@ -63,18 +66,18 @@ prompts:
 
   rank_experiences:
     base_template: |
-      请根据以下职位描述，从给定的经历中选择最相关的6个经历并进行排名。
+      请根据以下职位描述，从给定的经历中选择最相关的4个经历并进行排名。所有回答（除引用JD原文部分）必须使用中文。
 
       职位描述：
       {jd_text}
 
       个人经历库：
-      {experiences_text}
+      {experiences_library}
 
       要求：
-      - 选择最匹配职位要求的6个经历
+      - 选择最匹配职位要求的4个经历
       - match_percentage表示整体匹配度(0-100)
-      - rank从1到6，1为最相关
+      - rank从1到4，1为最相关
       - justification要具体说明技能、经验、项目类型的匹配度
     
     output_formats:
@@ -83,12 +86,10 @@ prompts:
         {{
             "match_percentage": 85,
             "ranked_experiences": [
-                {{"id": "经历ID", "rank": 1, "justification": "为什么这个经历排名第1的详细理由"}},
-                {{"id": "经历ID", "rank": 2, "justification": "为什么这个经历排名第2的详细理由"}},
-                {{"id": "经历ID", "rank": 3, "justification": "为什么这个经历排名第3的详细理由"}},
-                {{"id": "经历ID", "rank": 4, "justification": "为什么这个经历排名第4的详细理由"}},
-                {{"id": "经历ID", "rank": 5, "justification": "为什么这个经历排名第5的详细理由"}},
-                {{"id": "经历ID", "rank": 6, "justification": "为什么这个经历排名第6的详细理由"}}
+                {{"id": "经历ID", "rank": 1, "justification": "一句话中文理由"}},
+                {{"id": "经历ID", "rank": 2, "justification": "一句话中文理由"}},
+                {{"id": "经历ID", "rank": 3, "justification": "一句话中文理由"}},
+                {{"id": "经历ID", "rank": 4, "justification": "一句话中文理由"}}
             ]
         }}
       
@@ -97,12 +98,10 @@ prompts:
         {{
             "match_percentage": 85,
             "ranked_experiences": [
-                {{"id": "经历ID", "rank": 1, "justification": "为什么这个经历排名第1的详细理由"}},
-                {{"id": "经历ID", "rank": 2, "justification": "为什么这个经历排名第2的详细理由"}},
-                {{"id": "经历ID", "rank": 3, "justification": "为什么这个经历排名第3的详细理由"}},
-                {{"id": "经历ID", "rank": 4, "justification": "为什么这个经历排名第4的详细理由"}},
-                {{"id": "经历ID", "rank": 5, "justification": "为什么这个经历排名第5的详细理由"}},
-                {{"id": "经历ID", "rank": 6, "justification": "为什么这个经历排名第6的详细理由"}}
+                {{"id": "经历ID", "rank": 1, "justification": "一句话中文理由"}},
+                {{"id": "经历ID", "rank": 2, "justification": "一句话中文理由"}},
+                {{"id": "经历ID", "rank": 3, "justification": "一句话中文理由"}},
+                {{"id": "经历ID", "rank": 4, "justification": "一句话中文理由"}}
             ]
         }}
       
@@ -111,11 +110,9 @@ prompts:
         {{
             "match_percentage": 85,
             "ranked_experiences": [
-                {{"id": "经历ID", "rank": 1, "justification": "为什么这个经历排名第1的详细理由"}},
-                {{"id": "经历ID", "rank": 2, "justification": "为什么这个经历排名第2的详细理由"}},
-                {{"id": "经历ID", "rank": 3, "justification": "为什么这个经历排名第3的详细理由"}},
-                {{"id": "经历ID", "rank": 4, "justification": "为什么这个经历排名第4的详细理由"}},
-                {{"id": "经历ID", "rank": 5, "justification": "为什么这个经历排名第5的详细理由"}},
-                {{"id": "经历ID", "rank": 6, "justification": "为什么这个经历排名第6的详细理由"}}
+                {{"id": "经历ID", "rank": 1, "justification": "一句话中文理由"}},
+                {{"id": "经历ID", "rank": 2, "justification": "一句话中文理由"}},
+                {{"id": "经历ID", "rank": 3, "justification": "一句话中文理由"}},
+                {{"id": "经历ID", "rank": 4, "justification": "一句话中文理由"}}
             ]
         }} 

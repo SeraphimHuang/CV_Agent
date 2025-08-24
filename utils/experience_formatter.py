@@ -16,6 +16,8 @@ def format_single_experience(exp: Dict) -> str:
     """根据type格式化单条经历"""
     t = exp.get("type", "unknown").lower()
     lines = []
+    # 在开头加入唯一ID，便于LLM返回时直接引用
+    lines.append(f"ID: {exp.get('id')}")
     if t == "internship":
         header = f"[INTERNSHIP] {exp.get('company', '')} – {exp.get('role', '')}"
         if project := exp.get("project"):
