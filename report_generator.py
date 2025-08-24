@@ -132,8 +132,8 @@ class MarkdownReportGenerator:
             key=lambda x: x["total_score"]
         )
         
-        # 返回前4名
-        return sorted_experiences[:4]
+        # 返回所有出现过的经历，已按总分排序
+        return sorted_experiences[:6]
     
     def generate_report(self, analysis_results: List[Dict[str, Any]], experiences_data: List[Dict[str, Any]]) -> str:
         """
@@ -152,7 +152,7 @@ class MarkdownReportGenerator:
         self._add_header("简历优化分析报告", 1)
         self._add_line(f"**生成时间**: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
         self._add_line(f"**分析职位数量**: {len(analysis_results)}")
-        self._add_line(f"**使用LLM**: Gemini, GPT-3.5, Claude-3-Sonnet")
+        self._add_line(f"**使用LLM**: Gemini 2.5, GPT-3.5, Claude-3-Sonnet")
         self._add_line()
         
         # 我们仅使用经历ID，不再依赖 title 字段
@@ -210,7 +210,7 @@ class MarkdownReportGenerator:
                 
                 # 如果有排名结果，显示推荐经历
                 if ranking_results:
-                    self._add_header("📝 推荐经历 Top 4", 3)
+                    self._add_header("📝 推荐经历 Top ", 3)
                     
                     # 聚合排名结果
                     top_experiences = self._aggregate_experience_rankings(ranking_results)

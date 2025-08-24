@@ -247,12 +247,9 @@ async def main():
     import argparse
     
     parser = argparse.ArgumentParser(description="简历优化分析工具")
-    parser.add_argument("--config", "-c", default="config_example.json", 
-                       help="配置文件路径 (默认: config_example.json)")
-    parser.add_argument("--experience", "-e", default="experiences_example.json",
-                       help="个人经历JSON路径 (默认: experiences_example.json)")
-    parser.add_argument("--output", "-o", default="resume_analysis_report.md", 
-                       help="输出报告路径 (默认: resume_analysis_report.md)")
+    parser.add_argument("--config", "-c", default="config.json")
+    parser.add_argument("--experience", "-e", default="experiences.json")
+    parser.add_argument("--output", "-o", default="resume_analysis_report.md")
     
     args = parser.parse_args()
     

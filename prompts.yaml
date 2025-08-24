@@ -76,7 +76,7 @@ prompts:
 
       要求：
       - 选择最匹配职位要求的4个经历
-      - match_percentage表示整体匹配度(0-100)
+      - match_percentage表示选择的4个经历的整体匹配度(0-100)
       - rank从1到4，1为最相关
       - justification要具体说明技能、经验、项目类型的匹配度
     
