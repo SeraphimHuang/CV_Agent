@@ -200,6 +200,7 @@ class ResumeOptimizer:
         print("="*50)
     
     async def run(self, config_path: str = "config_example.json", 
+                  experience_path: str = "experiences_example.json",
                   output_path: str = "resume_analysis_report.md") -> bool:
         """运行完整的分析流程"""
         print("🚀 启动简历优化分析...")
@@ -211,7 +212,7 @@ class ResumeOptimizer:
             return False
         
         # 加载数据
-        if not self.load_data():
+        if not self.load_data(config_path, experience_path):
             return False
         
         # 初始化LLM管理器
@@ -248,6 +249,8 @@ async def main():
     parser = argparse.ArgumentParser(description="简历优化分析工具")
     parser.add_argument("--config", "-c", default="config_example.json", 
                        help="配置文件路径 (默认: config_example.json)")
+    parser.add_argument("--experience", "-e", default="experiences_example.json",
+                       help="个人经历JSON路径 (默认: experiences_example.json)")
     parser.add_argument("--output", "-o", default="resume_analysis_report.md", 
                        help="输出报告路径 (默认: resume_analysis_report.md)")
     
@@ -257,7 +260,9 @@ async def main():
     optimizer = ResumeOptimizer()
     
     # 运行分析
-    success = await optimizer.run(args.config, args.output)
+    success = await optimizer.run(config_path=args.config,
+                                  experience_path=args.experience,
+                                  output_path=args.output)
     
     if success:
         print(f"\n✅ 报告已保存到: {args.output}")
