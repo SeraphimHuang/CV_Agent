@@ -152,7 +152,7 @@ class MarkdownReportGenerator:
         self._add_header("简历优化分析报告", 1)
         self._add_line(f"**生成时间**: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
         self._add_line(f"**分析职位数量**: {len(analysis_results)}")
-        self._add_line(f"**使用LLM**: Gemini 2.5, GPT-3.5, Claude-3-Sonnet")
+        self._add_line(f"**使用LLM**: Gemini 2.5, GPT-5-mini Claude-4-Sonnet")
         self._add_line()
         
         # 我们仅使用经历ID，不再依赖 title 字段

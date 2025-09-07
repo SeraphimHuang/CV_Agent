@@ -1,5 +1,5 @@
 {
-  "excel_file": "positions_example.xlsx",
+  "excel_file": "positions_example.xlsm",
   "sheet_name": "Sheet1",
   "date_filter": {
     "column": "日期",
