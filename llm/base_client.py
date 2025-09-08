@@ -74,6 +74,8 @@ class BaseLLMClient(ABC):
             return {
                 "citizenship_required": False,
                 "senior_level_required": False,
+                "expected_graduation_mentioned": False,
+                "expected_graduation_time": None,
                 "reason": f"{self.llm_name}调用失败: {str(e)}"
             }
     

@@ -27,7 +27,7 @@ retry_config:
 prompts:
   screen_jd:
     base_template: |
-      请分析以下职位描述，判断是否有美国公民/绿卡身份要求和是否要求高级别经验。
+      请分析以下职位描述，判断是否有美国公民/绿卡身份要求和是否要求高级别经验。同时识别是否提到期望的毕业时间。
 
       职位描述：
       {jd_text}
@@ -35,6 +35,8 @@ prompts:
       判断标准：
       - citizenship_required: 如果明确提到必须US citizenship、green card等，则为true
       - senior_level_required: 如果要求senior level、5年以上经验、lead/manager角色等，则为true
+      - expected_graduation_mentioned: 如果提到期望毕业时间（包括单点时间和时间窗口，如"预计2025年毕业""Class of 2025""Fall 2025""between Aug 2024 and Jun 2025"等），则为true
+      - expected_graduation_time: 如果提到毕业时间，请提取原文文本；如果有多处表述，选择其中一处；如果未提及，返回null
     
     output_formats:
       gemini: |
@@ -43,6 +45,8 @@ prompts:
         {{
             "citizenship_required": true/false,
             "senior_level_required": true/false,
+            "expected_graduation_mentioned": true/false,
+            "expected_graduation_time": "原文文本" 或 null,
             "reason": "具体原因说明"
         }}
       
@@ -52,6 +56,8 @@ prompts:
         {{
             "citizenship_required": true/false,
             "senior_level_required": true/false,
+            "expected_graduation_mentioned": true/false,
+            "expected_graduation_time": "原文文本" 或 null,
             "reason": "具体原因说明"
         }}
       
@@ -61,6 +67,8 @@ prompts:
         {{
             "citizenship_required": true/false,
             "senior_level_required": true/false,
+            "expected_graduation_mentioned": true/false,
+            "expected_graduation_time": "原文文本" 或 null,
             "reason": "具体原因说明"
         }}
 

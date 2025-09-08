@@ -180,6 +180,13 @@ class MarkdownReportGenerator:
             self._add_list_item(f"**职位**: {position_info['position']}")
             self._add_list_item(f"**地点**: {position_info['location']}")
             self._add_list_item(f"**链接**: {position_info['link']}")
+            
+            # 毕业时间（从Gemini筛选结果获取）
+            gemini_result = screening_results.get("gemini", {})
+            expected_graduation_time = gemini_result.get("expected_graduation_time")
+            graduation_display = expected_graduation_time if expected_graduation_time else "na"
+            self._add_list_item(f"**毕业时间（期望）**: {graduation_display}")
+            
             self._add_line()
             
             # 筛选结果
