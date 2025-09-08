@@ -42,52 +42,47 @@ class MarkdownReportGenerator:
         formatted_results = []
         
         for llm_name, result in llm_results.items():
-            match_percentage = result.get("match_percentage", 0)
-            error = result.get("error")
-            if error:
-                formatted_results.append(f"**{llm_name.upper()}**: ❌ 调用失败 - {error}")
-            else:
-                formatted_results.append(f"**{llm_name.upper()}**: 匹配度 {match_percentage}%")
+            if result_type == "screening":
+                citizenship = "有身份要求" if result.get("citizenship_required") else "无身份要求"
+                senior_level = "要求高级别" if result.get("senior_level_required") else "不要求高级别"
+                reason = result.get("reason", "无")
+                formatted_results.append(f"**{llm_name.upper()}**: {citizenship}, {senior_level} - {reason}")
+            
+            elif result_type == "ranking":
+                match_percentage = result.get("match_percentage", 0)
+                error = result.get("error")
+                if error:
+                    formatted_results.append(f"**{llm_name.upper()}**: ❌ 调用失败 - {error}")
+                else:
+                    formatted_results.append(f"**{llm_name.upper()}**: 匹配度 {match_percentage}%")
         
         return formatted_results
     
-    def _extract_rejection_details(self, screening_results: Dict[str, Dict[str, Any]], rejection_reasons: List[str]) -> List[str]:
+    def _should_reject_position(self, screening_results: Dict[str, Dict[str, Any]]) -> tuple[bool, List[str]]:
         """
-        从screening_results中提取具体的拒绝原因
+        判断是否应该拒绝该职位（>=2个LLM认为不合适）
         
-        Args:
-            screening_results: 筛选结果字典
-            rejection_reasons: 拒绝的LLM名称列表
-            
         Returns:
-            List[str]: 具体的拒绝原因列表
+            tuple: (是否拒绝, 拒绝原因列表)
         """
-        detailed_reasons = []
+        rejection_count = 0
+        rejection_reasons = []
         
-        for llm_name in rejection_reasons:
-            if llm_name in screening_results:
-                result = screening_results[llm_name]
+        for llm_name, result in screening_results.items():
+            citizenship_required = result.get("citizenship_required", False)
+            senior_level_required = result.get("senior_level_required", False)
+            
+            if citizenship_required or senior_level_required:
+                rejection_count += 1
                 reasons = []
-                
-                # 检查身份要求
-                if result.get("citizenship_required", False):
-                    reasons.append("要求美国身份/绿卡")
-                
-                # 检查经验要求
-                if result.get("senior_level_required", False):
+                if citizenship_required:
+                    reasons.append("有身份要求")
+                if senior_level_required:
                     reasons.append("要求高级别经验")
-                
-                # 添加LLM给出的具体原因
-                llm_reason = result.get("reason", "")
-                if llm_reason and llm_reason != "无":
-                    reasons.append(llm_reason)
-                
-                if reasons:
-                    detailed_reasons.append(f"**{llm_name.upper()}**: {'; '.join(reasons)}")
-                else:
-                    detailed_reasons.append(f"**{llm_name.upper()}**: 不符合投递条件")
+                rejection_reasons.append(f"{llm_name}: {', '.join(reasons)}")
         
-        return detailed_reasons
+        should_reject = rejection_count >= 2
+        return should_reject, rejection_reasons
     
     def _aggregate_experience_rankings(self, ranking_results: Dict[str, Dict[str, Any]]) -> List[Dict[str, Any]]:
         """
@@ -168,7 +163,7 @@ class MarkdownReportGenerator:
         
         for i, position_result in enumerate(analysis_results, 1):
             position_info = position_result["position_info"]
-            screening_results = position_result.get("screening_results", {})
+            screening_results = position_result["screening_results"]
             ranking_results = position_result.get("ranking_results", {})
             
             # 职位标题
@@ -183,8 +178,7 @@ class MarkdownReportGenerator:
             self._add_line()
             
             # 筛选结果
-            should_reject = position_result.get("rejected", False)
-            rejection_reasons = position_result.get("rejection_reasons", [])
+            should_reject, rejection_reasons = self._should_reject_position(screening_results)
             
             if should_reject:
                 rejected_count += 1
@@ -192,16 +186,14 @@ class MarkdownReportGenerator:
                 self._add_quote("❌ **该职位不符合投递条件，建议跳过**")
                 
                 self._add_line("**拒绝原因**:")
-                if rejection_reasons and screening_results:
-                    detailed_reasons = self._extract_rejection_details(screening_results, rejection_reasons)
-                    for reason in detailed_reasons:
-                        self._add_list_item(reason)
-                elif rejection_reasons:
-                    # 如果有rejection_reasons但没有screening_results详情
-                    for llm_name in rejection_reasons:
-                        self._add_list_item(f"**{llm_name.upper()}**: 不符合投递条件")
-                else:
-                    self._add_list_item("职位不符合投递条件")
+                for reason in rejection_reasons:
+                    self._add_list_item(reason)
+                self._add_line()
+                
+                self._add_line("**各LLM详细分析**:")
+                llm_formatted = self._format_llm_results(screening_results, "screening")
+                for result_line in llm_formatted:
+                    self._add_list_item(result_line)
                 self._add_line()
                 
             else:
@@ -209,7 +201,12 @@ class MarkdownReportGenerator:
                 self._add_header("✅ 筛选结果：推荐投递", 3)
                 self._add_quote("✅ **该职位符合投递条件，建议准备申请材料**")
                 
-
+                # 筛选详情
+                self._add_line("**各LLM筛选结果**:")
+                llm_formatted = self._format_llm_results(screening_results, "screening")
+                for result_line in llm_formatted:
+                    self._add_list_item(result_line)
+                self._add_line()
                 
                 # 如果有排名结果，显示推荐经历
                 if ranking_results:
