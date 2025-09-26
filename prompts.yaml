@@ -33,7 +33,7 @@ prompts:
       {jd_text}
 
       判断标准：
-      - citizenship_required: 如果明确提到必须US citizenship、green card等，则为true
+      - citizenship_required: 如果明确提到必须US citizenship、green card等，则为true, 注意US-based applicants only这样的表述应该是指地理位置而非公民身份
       - senior_level_required: 如果要求senior level、5年以上经验、lead/manager角色等，则为true
       - expected_graduation_mentioned: 如果提到期望毕业时间（包括单点时间和时间窗口，如"预计2025年毕业""Class of 2025""Fall 2025""between Aug 2024 and Jun 2025"等），则为true
       - expected_graduation_time: 如果提到毕业时间，请提取原文文本；如果有多处表述，选择其中一处；如果未提及，返回null
@@ -41,7 +41,7 @@ prompts:
     output_formats:
       gemini: |
         请严格按照以下JSON格式回答，不要添加任何其他内容：
-        # 理由请使用一句中文简述
+        # 请使用一句中文简述
         {{
             "citizenship_required": true/false,
             "senior_level_required": true/false,
