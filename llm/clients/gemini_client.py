@@ -1,34 +1,35 @@
-from __future__ import annotations
-
 """
-Google Gemini客户端新实现
-使用 `google.genai.Client` 按官方示例调用 Gemini API。
+Google Gemini 客户端实现
+使用 OpenAI SDK 通过 Gemini 的 OpenAI 兼容接口
 """
 
-import asyncio
-from google import genai
-
+from openai import AsyncOpenAI
 from config.prompt_manager import PromptManager
 from llm.base_client import BaseLLMClient
 
 
 class GeminiClient(BaseLLMClient):
-    """Google Gemini客户端（基于 genai.Client）"""
-
+    """Google Gemini 客户端（通过 OpenAI 兼容接口）"""
+    
     def __init__(self, api_key: str, prompt_manager: PromptManager):
-        super().__init__(prompt_manager, "gemini")
-        # 使用示例中的官方 Client，直接传入 API key
-        self.client = genai.Client(api_key=api_key)
-        self._use_client = True
-
-    async def _call_llm(self, prompt: str) -> str:
-        """调用 Gemini API 并返回文本"""
-        print("🟡 Gemini API 调用开始...")
-        response = await asyncio.to_thread(
-            self.client.models.generate_content,
-            model=self.config["model"],  # "gemini-2.5-flash"
-            contents=prompt,
+        super().__init__(prompt_manager, 'gemini')
+        self.client = AsyncOpenAI(
+            api_key=api_key,
+            base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
         )
-        result_text = response.text
-        print("🟡 Gemini API 调用完成")
-        return result_text 
+    
+    async def _call_llm(self, prompt: str) -> str:
+        """调用 Gemini API（通过 OpenAI 兼容接口）"""
+        print(f"🟡 Gemini API 调用开始 (OpenAI 兼容模式)...")
+        
+        response = await self.client.chat.completions.create(
+            model=self.config['model'],
+            messages=[
+                {"role": "user", "content": prompt}
+            ],
+            temperature=self.config['temperature'],
+            max_tokens=self.config.get('max_tokens', 2000)
+        )
+        
+        print(f"🟡 Gemini API 调用完成")
+        return response.choices[0].message.content

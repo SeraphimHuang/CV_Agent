@@ -4,7 +4,6 @@ Prompt配置管理器
 """
 
 import yaml
-from langchain.prompts import PromptTemplate
 
 
 class PromptManager:
@@ -38,9 +37,8 @@ class PromptManager:
         # 组合基础模板和输出格式
         full_template = base_template + "\n\n" + output_format
         
-        # 替换变量
-        prompt_template = PromptTemplate.from_template(full_template)
-        return prompt_template.format(**variables)
+        # 使用 Python 内置的字符串格式化替换变量
+        return full_template.format(**variables)
     
     def get_llm_config(self, llm_name: str) -> dict:
         """获取LLM配置"""

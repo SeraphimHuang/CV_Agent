@@ -3,8 +3,14 @@
 
 # Data files (sensitive/personal)
 *.xlsx
+*.xlsm
 !*_example.xlsx
+!*_example.xlsm
 experiences.json
+
+# Excel temporary files
+~$*.xlsx
+~$*.xlsm
 
 # Output files
 resume_analysis_report.md

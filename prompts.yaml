@@ -4,9 +4,9 @@
 # LLM基础配置
 llm_configs:
   gemini:
-    model: "gemini-2.5-flash"
+    model: "gemini-3-pro-preview"
     temperature: 0.1
-    max_output_tokens: 2000
+    max_tokens: 8000
   
   gpt:
     model: "gpt-5.2"
@@ -14,7 +14,7 @@ llm_configs:
     max_tokens: 5000
     
   claude:
-    model: "claude-sonnet-4-20250514"
+    model: "claude-opus-4-5-20251101"
     temperature: 0.1
     max_tokens: 2000
 
@@ -87,6 +87,7 @@ prompts:
       - match_percentage表示选择的4个经历的整体匹配度(0-100)
       - rank从1到4，1为最相关
       - justification要具体说明技能、经验、项目类型的匹配度
+      - 重要：justification中不要使用英文双引号(")，如需引用请使用单引号(')或省略引号
     
     output_formats:
       gemini: |

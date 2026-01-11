@@ -42,6 +42,10 @@ class BaseLLMClient(ABC):
                 # 打印原始响应方便调试
                 print(f"📄 {self.llm_name} 原始响应:\n{response}\n---")
 
+                # 检查响应是否为空
+                if not response:
+                    raise Exception(f"{self.llm_name} 返回空响应")
+
                 # 尝试修复和解析JSON
                 fixed_response = self.json_fixer.fix_json(response)
                 json.loads(fixed_response)  # 验证JSON格式

@@ -1,10 +1,7 @@
 pandas
 openpyxl
-google-generativeai
 openai
-anthropic
 python-dotenv
 aiohttp
-langchain==0.1.20
 pyyaml
 pydantic 
