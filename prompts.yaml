@@ -9,7 +9,7 @@ llm_configs:
     max_output_tokens: 2000
   
   gpt:
-    model: "gpt-5-mini"
+    model: "gpt-5.2"
     temperature: 0.1
     max_tokens: 5000
     
@@ -27,13 +27,13 @@ retry_config:
 prompts:
   screen_jd:
     base_template: |
-      请分析以下职位描述，判断是否有美国公民/绿卡身份要求和是否要求高级别经验。同时识别是否提到期望的毕业时间。
+      请分析以下职位描述，判断是否有美国公民/绿卡身份要求和是否要求高级别经验（明确说明是针对这个岗位的要求，如果说部分role需要则不算）。同时识别是否提到期望的毕业时间。
 
       职位描述：
       {jd_text}
 
       判断标准：
-      - citizenship_required: 如果明确提到必须US citizenship、green card等，则为true, 注意US-based applicants only这样的表述应该是指地理位置而非公民身份
+      - citizenship_required: 如果明确提到必须US citizenship、green card等，则为true, 其它没直接说当前role需要的都不算true，注意US-based applicants only这样的表述应该是指地理位置而非公民身份
       - senior_level_required: 如果要求senior level、5年以上经验、lead/manager角色等，则为true
       - expected_graduation_mentioned: 如果提到期望毕业时间（包括单点时间和时间窗口，如"预计2025年毕业""Class of 2025""Fall 2025""between Aug 2024 and Jun 2025"等），则为true
       - expected_graduation_time: 如果提到毕业时间，请提取原文文本；如果有多处表述，选择其中一处；如果未提及，返回null
@@ -41,7 +41,7 @@ prompts:
     output_formats:
       gemini: |
         请严格按照以下JSON格式回答，不要添加任何其他内容：
-        # 请使用一句中文简述
+        # 理由请使用一句中文简述
         {{
             "citizenship_required": true/false,
             "senior_level_required": true/false,
